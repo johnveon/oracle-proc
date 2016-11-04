@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctg.test.orc.proc.dao.StudentDao">
+	<insert id="add">
+		insert into TB_STUDENT(STUDENT_ID,STUDENT_NO,STUDENT_NAME,GENDER,ID_NUM)
+		values (#{studentId},#{studentNo},#{studentName},#{gender},#{idNum})
+	</insert>
+
+	<select id="getAll" resultType="com.ctg.test.orc.proc.entity.Student">
+		select * from TB_STUDENT
+	</select>
+
+	<resultMap id="cursorMap" type="com.ctg.test.orc.proc.entity.Student">
+		<result property="studentId" column="STUDENT_ID"/>
+		<result property="studentNo" column="STUDENT_NO"/>
+		<result property="studentName" column="STUDENT_NAME"/>
+		<result property="gender" column="GENDER"/>
+		<result property="idNum" column="ID_NUM"/>
+   </resultMap>
+	<!--mybatis调用存储过程-->
+    <select id="executeProcGetByParam" statementType="CALLABLE" 
+    	parameterType="java.util.Map">
+    	
+        call EXECUTE_PROC_GETALL(
+        #{studentId,jdbcType=VARCHAR,mode=IN},
+        #{studentNo,jdbcType=INTEGER,mode=IN},
+        #{studentName,jdbcType=VARCHAR,mode=IN},
+        #{result,jdbcType=CURSOR,mode=OUT,javaType=ResultSet,resultMap=cursorMap}
+        )
+    </select>
+    
+     <select id="executeProcGetAll" statementType="CALLABLE" 
+    	parameterType="java.util.Map">
+    	
+        call EXECUTE_PROC_GETALL(
+        #{result,jdbcType=CURSOR,mode=OUT,javaType=ResultSet,resultMap=cursorMap}
+        )
+    </select>
+    
+    
+</mapper>
+
+
